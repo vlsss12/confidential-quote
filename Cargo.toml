@@ -1,0 +1,9 @@
+[package]
+name = "confidential-quote"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+primus_ntt = { path = "../primus-fhe/crates/primus_ntt" }
+primus_tfhe_glwe_ntt = { path = "../primus-fhe/crates/primus_tfhe_glwe_ntt" }
+rand = "0.10.3"

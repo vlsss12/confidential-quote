@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Confidential Quote · Primus FHE Demo</title>
+<style>
+:root{color-scheme:dark;--paper:#101219;--card:#191d28;--edge:#303647;--muted:#a8afc3;--mint:#9af1ce}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top right,#273d3c,transparent 45%),var(--paper);color:#f3f5fb;font:16px/1.55 system-ui,sans-serif}main{max-width:1050px;margin:auto;padding:42px 24px}.tag{color:var(--mint);font-size:.78rem;text-transform:uppercase;letter-spacing:.13em;font-weight:750}h1{font-size:clamp(2.5rem,7vw,5rem);line-height:1.05;letter-spacing:-.06em;margin:18px 0}p{color:var(--muted);margin:.45rem 0}h2{font-size:1.2rem;margin:0 0 12px}.lede{max-width:650px;font-size:1.15rem}.grid,.flow{display:grid;gap:16px;margin-top:25px}.grid{grid-template-columns:1fr 1fr}.flow{grid-template-columns:repeat(3,1fr)}section,article{background:var(--card);border:1px solid var(--edge);border-radius:18px;padding:22px}label{display:block;margin:12px 0;color:#d8deec}select,button{font:inherit;border-radius:9px;padding:9px 12px}select{display:block;width:100%;margin-top:4px;border:1px solid var(--edge);background:var(--paper);color:inherit}button{cursor:pointer;border:0;background:var(--mint);color:#11221b;font-weight:750}button:disabled{opacity:.6;cursor:wait}.presets{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}.presets button{background:#303747;color:#f3f5fb;font-size:.78rem}.price{font-size:3.2rem;line-height:1.25;font-weight:800;color:var(--mint)}footer{margin-top:22px;color:var(--muted);font-size:.9rem}@media(max-width:640px){.grid,.flow{grid-template-columns:1fr}}
+</style>
+</head>
+<body><main>
+<div class="tag">Primus FHE · Local technical demo</div>
+<h1>Confidential Quote</h1>
+<p class="lede">Calculate a loyalty discount while the evaluator works with encrypted inputs.</p>
+<div class="grid">
+<section><h2>Try a quote</h2>
+<div class="presets" aria-label="Example inputs">
+<button type="button" data-tier="1">Below threshold</button><button type="button" data-tier="2">At threshold</button><button type="button" data-tier="3">Above threshold</button>
+</div>
+<form id="quote">
+<label>Order quantity<select id="quantity"><option>1</option><option selected>2</option><option>3</option></select></label>
+<label>Loyalty level<select id="tier"><option>0</option><option selected>1</option><option>2</option><option>3</option></select></label>
+<button id="submit">Compute encrypted quote</button>
+</form></section>
+<section aria-live="polite"><div class="tag">Decrypted result</div><div class="price" id="price">—</div>
+<p id="status">Run a quote to see the result.</p>
+<h2>Public pricing rule</h2><p>Each item costs $5. Loyalty level 2 or above takes $2 off the order.</p>
+</section></div>
+<div class="flow"><article><div class="tag">01 · Client</div><p>The local Rust helper encrypts your sample quantity and loyalty level.</p></article>
+<article><div class="tag">02 · Evaluator</div><p>Primus TFHE applies the public pricing rule to ciphertext using an evaluation key.</p></article>
+<article><div class="tag">03 · Client</div><p>The helper decrypts the final price and displays it here.</p></article></div>
+<footer>Use sample values only. The browser and helper run on this device. Client and evaluator roles share a native process and use experimental parameters.</footer>
+</main>
+<script>
+const quote = document.querySelector('#quote');
+const quantity = document.querySelector('#quantity');
+const tier = document.querySelector('#tier');
+const submit = document.querySelector('#submit');
+const price = document.querySelector('#price');
+const status = document.querySelector('#status');
+const presets = [...document.querySelectorAll('[data-tier]')];
+for (const button of presets) button.onclick = () => {
+  quantity.value = '2';
+  tier.value = button.dataset.tier;
+  quote.requestSubmit();
+};
+quote.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const payload = { quantity: Number(quantity.value), tier: Number(tier.value) };
+  const controls = [submit, quantity, tier, ...presets];
+  controls.forEach(control => control.disabled = true);
+  price.textContent = '—';
+  status.textContent = 'Computing with Primus FHE…';
+  try {
+    const response = await fetch('/quote', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload)
+    });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error);
+    price.textContent = '$' + result.price.toFixed(2);
+    status.textContent = 'Quote decrypted on this device.';
+  } catch (error) {
+    status.textContent = error.message;
+  } finally {
+    controls.forEach(control => control.disabled = false);
+  }
+});
+</script>
+</body></html>
