@@ -3,10 +3,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "esbuild web/loyalty.js --bundle --format=esm --outfile=web/loyalty.bundle.js"
+    "build": "node scripts/write-supabase-config.js && esbuild web/loyalty.js --bundle --format=esm --outfile=web/loyalty.bundle.js && esbuild web/shop.js --bundle --format=esm --outfile=web/shop.bundle.js"
   },
   "dependencies": {
-    "@primuslabs/zktls-js-sdk": "0.3.15"
+    "@primuslabs/zktls-js-sdk": "0.3.15",
+    "@supabase/supabase-js": "^2.119.0"
   },
   "devDependencies": {
     "esbuild": "0.25.12"

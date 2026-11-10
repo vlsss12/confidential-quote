@@ -7,3 +7,6 @@
 /.vercel/
 /runtime/
 .vercel
+
+/web/shop.bundle.js
+/web/supabase-config.js

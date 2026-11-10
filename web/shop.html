@@ -1,96 +1,22 @@
 <!doctype html>
-<html lang="en" data-mode="preview">
+<html lang="en">
+<head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Confidential Quote Shop</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f45a16">
+<title>Confidential Quote · Primus</title>
 <style>
-  body { font: 1rem system-ui, sans-serif; background: #17110e; color: #fff8f3; margin: 0; }
-  main { max-width: 42rem; margin: 8vh auto; padding: 1.25rem; }
-  h1 { font-size: clamp(2rem, 6vw, 3.5rem); margin: .25rem 0; }
-  p { color: #dac6b9; line-height: 1.6; }
-  strong { color: #ffad7e; }
-  form { background: #211813; border: 1px solid #67412d; padding: 1.5rem; border-radius: 1rem; }
-  label { display: grid; gap: .4rem; margin: 1rem 0; }
-  select, button { font: inherit; padding: .65rem; border-radius: .5rem; }
-  select { background: #35251c; color: inherit; border: 1px solid #9b6243; }
-  button { background: #ff854e; color: #241208; border: 0; font-weight: 700; cursor: pointer; margin: .3rem .3rem .3rem 0; }
-  button:disabled { opacity: .55; cursor: default; }
-  #status { overflow-wrap: anywhere; min-height: 3rem; }
+:root{color-scheme:light;--ink:#24170f;--muted:#75675f;--line:#f1d8c8;--orange:#f45a16;--orange2:#ff9f38;--cream:#fffaf5;--card:#fff;--green:#167b52}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 85% 0%,#ffe0c0 0,transparent 32%),#fffaf5;color:var(--ink);font:15px/1.55 Inter,"Avenir Next",system-ui,sans-serif}main{max-width:1080px;margin:auto;padding:0 24px 60px}header{display:flex;justify-content:space-between;align-items:center;padding:22px 0;border-bottom:1px solid var(--line)}.brand{display:flex;gap:10px;align-items:center;font-weight:800;letter-spacing:-.03em}.logo{width:36px;height:36px;display:grid;place-items:center;color:white;background:linear-gradient(135deg,var(--orange2),var(--orange));border-radius:11px;font-weight:900}.toplink{color:var(--muted);text-decoration:none}.hero{padding:54px 0 30px;display:grid;grid-template-columns:1.2fr .8fr;gap:28px;align-items:center}.eyebrow{font-size:.73rem;text-transform:uppercase;letter-spacing:.16em;font-weight:800;color:#b84613}h1{font-size:clamp(2.4rem,6vw,4.5rem);line-height:.98;letter-spacing:-.065em;margin:12px 0 18px}.orange{color:var(--orange)}.lede{max-width:570px;font-size:1.02rem;color:var(--muted)}.hero-card{border-radius:24px;padding:28px;background:linear-gradient(140deg,#ffad45,#f04c12);color:#fff;box-shadow:0 18px 44px #ca571c26}.hero-card .eyebrow{color:#fff3e5}.hero-card strong{display:block;font-size:2rem;letter-spacing:-.05em;margin-top:16px}.hero-card p{color:#fff5ed}.layout{display:grid;grid-template-columns:1.08fr .92fr;gap:18px}section{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px;box-shadow:0 8px 30px #65381708}h2{font-size:1.13rem;letter-spacing:-.025em;margin:0 0 5px}.sub{font-size:.9rem;color:var(--muted);margin:0 0 18px}label{display:block;font-weight:650;font-size:.9rem;margin:15px 0}select,input{width:100%;margin-top:6px;padding:12px 13px;border:1px solid #e5d5ca;border-radius:11px;background:#fff;color:var(--ink);font:inherit}input:focus,select:focus{outline:2px solid #ffb078;outline-offset:2px}button{border:0;border-radius:11px;background:var(--orange);color:#fff;padding:12px 16px;font:inherit;font-weight:750;cursor:pointer}button:hover:not(:disabled){filter:brightness(.96)}button:disabled{opacity:.6;cursor:wait}.secondary{background:#fff4eb;color:#9b3c0d;border:1px solid #f1c4a4}.buttons{display:flex;gap:10px;flex-wrap:wrap}.buttons button{flex:1}.result{background:linear-gradient(145deg,#fff1e4,#fff)}.total{font-size:clamp(3rem,7vw,4.5rem);font-weight:850;line-height:1.1;letter-spacing:-.07em;color:var(--orange);margin:12px 0}.status{min-height:28px;color:var(--muted);font-size:.9rem}.divider{height:1px;background:var(--line);margin:20px 0}.authbox{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end}.authbox label{margin:0}.authbox button{white-space:nowrap}.signed{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px;border-radius:12px;background:#fff5ed}.signed span{overflow-wrap:anywhere;font-size:.9rem}.quote-list{display:grid;gap:10px;margin-top:16px}.quote-row{display:flex;justify-content:space-between;align-items:center;gap:12px;border:1px solid var(--line);padding:12px;border-radius:12px}.quote-row small{display:block;color:var(--muted)}.quote-row strong{white-space:nowrap;color:#b84613}.note{font-size:.8rem;color:var(--muted);margin-top:18px}.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}.step{border:1px solid var(--line);border-radius:16px;padding:18px;background:#fff}.step b{font-size:.73rem;color:#bb4b17;letter-spacing:.1em}.step h3{font-size:.98rem;margin:8px 0 4px}.step p{font-size:.86rem;color:var(--muted);margin:0}.error{color:#aa2b1a}.ok{color:var(--green)}footer{border-top:1px solid var(--line);margin-top:28px;padding-top:18px;font-size:.82rem;color:var(--muted)}[hidden]{display:none!important}@media(max-width:720px){main{padding-inline:16px}.hero,.layout{grid-template-columns:1fr}.hero{padding-top:38px}.steps{grid-template-columns:1fr}.authbox{grid-template-columns:1fr}.authbox button{width:100%}section{padding:19px}}
 </style>
-<main>
-  <strong>PRIMUS FHE · STORE PREVIEW</strong>
-  <h1>Confidential Quote Shop</h1>
-  <p id="intro">Compare sample loyalty pricing. Demo orders are saved only after persistent storage is connected. No payment is collected.</p>
-  <form>
-    <h2>Sample item</h2>
-    <p>US$5 per item. Rewards accounts receive US$2 off the cart.</p>
-    <label>Test account<select name="profile"><option value="standard">Standard</option><option value="rewards">Rewards</option></select></label>
-    <label>Quantity<select name="quantity"><option>1</option><option selected>2</option><option>3</option></select></label>
-    <button type="submit">Calculate total</button>
-    <button type="button" id="place" hidden disabled>Save demo order</button>
-    <p id="status" role="status" aria-live="polite"></p>
-  </form>
-</main>
-<script type="module">
-  const form = document.querySelector('form');
-  const place = document.querySelector('#place');
-  const status = document.querySelector('#status');
-  const local = document.documentElement.dataset.mode === 'local';
-  let ordersEnabled = local;
-  if (local) {
-    place.hidden = false;
-    document.querySelector('#intro').textContent = 'Compare sample loyalty pricing, then save a demo order. No payment is collected.';
-  } else {
-    place.hidden = false;
-    fetch('/orders').then(response => response.json()).then(({enabled}) => {
-      ordersEnabled = enabled === true;
-      status.textContent = ordersEnabled ? 'Persistent demo-order storage is ready. No payment is collected.' : 'Demo-order saving is waiting for persistent storage setup. You can still calculate sample prices.';
-    }).catch(() => {
-      status.textContent = 'Demo-order saving is temporarily unavailable. You can still calculate sample prices.';
-    });
-  }
-  let cart;
-  form.addEventListener('change', () => {
-    cart = undefined;
-    place.disabled = true;
-    status.textContent = '';
-  });
-  async function send(path, body) {
-    const response = await fetch(path, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body)});
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error);
-    return data;
-  }
-  const money = data => new Intl.NumberFormat('en-US', {style: 'currency', currency: data.currency}).format(data.totalCents / 100);
-  async function run(action) {
-    const controls = [...form.elements];
-    controls.forEach(control => { control.disabled = true; });
-    try { await action(); }
-    catch (error) { status.textContent = error.message; }
-    finally {
-      controls.forEach(control => { control.disabled = false; });
-      place.disabled = !ordersEnabled || !cart;
-    }
-  }
-  form.addEventListener('submit', event => {
-    event.preventDefault();
-    const inputs = {profile: form.elements.profile.value, quantity: Number(form.elements.quantity.value)};
-    cart = undefined;
-    status.textContent = 'Calculating with Primus FHE…';
-    run(async () => {
-      const {profile, quantity} = inputs;
-      const data = await send('/quote', local ? inputs : {quantity, tier: profile === 'rewards' ? 2 : 1});
-      if (ordersEnabled) cart = {...inputs, sku: 'loyalty-item', requestId: crypto.randomUUID()};
-      status.textContent = `Sample total: ${money(local ? data : {currency: 'USD', totalCents: data.price * 100})}`;
-    });
-  });
-  place.addEventListener('click', () => {
-    status.textContent = 'Saving your test order…';
-    run(async () => {
-      const data = await send('/orders', cart);
-      cart = undefined;
-      status.textContent = `Demo order ${data.id} saved. Total: ${money(data)}. No payment was collected.`;
-    });
-  });
-</script>
-</html>
+</head>
+<body><main>
+<header><div class="brand"><span class="logo" aria-hidden="true">P</span> Primus · Confidential Quote</div><a class="toplink" href="/">Back to overview ↗</a></header>
+<div class="hero"><div><div class="eyebrow">A practical privacy and verification demo</div><h1>Build a quote.<br><span class="orange">Keep the rule clear.</span></h1><p class="lede">Choose a sample loyalty tier and quantity, calculate a price, then save the result to your private account history. The page demonstrates a product flow without asking for financial account data.</p></div><aside class="hero-card"><div class="eyebrow">Example pricing policy</div><strong>$5 × quantity</strong><p>Tier 2 or 3 receives a $2 order discount. Sample data only.</p></aside></div>
+<div class="layout">
+<section><h2>1. Configure your quote</h2><p class="sub">Use the example inputs to see the pricing rule in action.</p><form id="quote-form"><label>Quantity<select id="quantity"><option value="1">1 item</option><option value="2" selected>2 items</option><option value="3">3 items</option></select></label><label>Example loyalty tier<select id="tier"><option value="0">Tier 0</option><option value="1" selected>Tier 1</option><option value="2">Tier 2</option><option value="3">Tier 3</option></select></label><div class="buttons"><button id="compute">Calculate quote</button></div></form><p class="note">This is a synthetic quote, not a purchase offer. No payment or real financial data is involved.</p></section>
+<section class="result" aria-live="polite"><div class="eyebrow">Calculated total</div><div id="total" class="total">—</div><p id="quote-status" class="status">Choose inputs, then calculate.</p><button id="save" class="secondary" disabled>Save to my history</button></section>
+</div>
+<section style="margin-top:18px"><h2>2. Your saved history</h2><p class="sub">Sign in with an email link to store and view quotes for this account only.</p><div id="auth-config-warning" class="status" hidden>Supabase sign-in has not been configured for this deployment.</div><form id="signin-form" class="authbox"><label for="email">Email address<input id="email" type="email" autocomplete="email" placeholder="you@example.com" required></label><button id="signin">Email me a sign-in link</button></form><div id="signed-in" class="signed" hidden><span id="user-email"></span><button id="signout" class="secondary" type="button">Sign out</button></div><p id="auth-status" class="status" aria-live="polite"></p><div id="quotes" class="quote-list"></div></section>
+<div class="steps"><article class="step"><b>01 · CHOOSE</b><h3>Set sample inputs</h3><p>Select a quantity and a sample tier. These values are created for this demonstration.</p></article><article class="step"><b>02 · CALCULATE</b><h3>Apply the pricing rule</h3><p>The Rust FHE helper computes the example total on the server.</p></article><article class="step"><b>03 · SAVE</b><h3>Keep your own record</h3><p>After email sign-in, your saved quotes are isolated by Supabase row-level security.</p></article></div>
+<footer>Privacy note: the displayed tier and quantity are synthetic inputs. The hosting server performs this sample computation; this page does not claim to privately verify a real loyalty or financial credential. Saved history is scoped to your signed-in account.</footer>
+</main><script type="module" src="/shop.bundle.js"></script></body></html>
