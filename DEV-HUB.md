@@ -13,3 +13,5 @@
 **Reviewer walkthrough** — Follow the [README](README.md), then try each threshold preset. With quantity 2, the expected outputs are $10 below the threshold and $8 at or above it.
 
 **Listing links** — Add the source repository URL after publishing it. Use a demo recording if a public browser link is required for review. The current browser app needs a native helper on the same device.
+
+**zkTLS template** — Sandbox Loyalty Level, `0a254030-f3b4-4b2d-8b43-189269d63e85`. The Dev Hub test returned `loyaltyLevel = 2`. See the README for the local SDK flow and configuration.

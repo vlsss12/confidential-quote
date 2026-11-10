@@ -1,5 +1,6 @@
 """Serve the browser UI and its native helper on this device only."""
 import json
+import os
 import subprocess
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
@@ -23,13 +24,25 @@ class Handler(BaseHTTPRequestHandler):
         self.reply(status, json.dumps(data).encode(), "application/json")
 
     def do_GET(self):
-        if self.headers.get("Host") != HOST or self.path != "/":
+        if self.headers.get("Host") != HOST:
             self.send_error(404)
             return
-        self.reply(200, (ROOT / "web/index.html").read_bytes(), "text/html; charset=utf-8")
+        if self.path == "/":
+            self.reply(200, (ROOT / "web/index.html").read_bytes(), "text/html; charset=utf-8")
+        elif self.path == "/loyalty.bundle.js" and (ROOT / "web/loyalty.bundle.js").is_file():
+            self.reply(200, (ROOT / "web/loyalty.bundle.js").read_bytes(), "text/javascript; charset=utf-8")
+        else:
+            self.send_error(404)
+
+    def primus(self, operation, payload=None):
+        result = subprocess.run(
+            ["node", ROOT / "primus-bridge.js", operation], input=payload,
+            capture_output=True, text=True, check=True, timeout=15,
+        )
+        return result.stdout.strip()
 
     def do_POST(self):
-        if self.path != "/quote" or self.headers.get("Host") != HOST:
+        if self.path not in ("/quote", "/primus/sign") or self.headers.get("Host") != HOST:
             self.send_error(404)
             return
         if self.headers.get("Origin") != f"http://{HOST}" or self.headers.get_content_type() != "application/json":
@@ -37,15 +50,43 @@ class Handler(BaseHTTPRequestHandler):
             return
         try:
             length = int(self.headers.get("Content-Length", "0"))
-            if not 0 < length <= 256:
+            if not 0 < length <= 32768:
                 raise ValueError
             data = json.loads(self.rfile.read(length))
-            quantity, tier = data["quantity"], data["tier"]
-            if type(quantity) is not int or type(tier) is not int or quantity not in range(1, 4) or tier not in range(4):
+            if not isinstance(data, dict):
                 raise ValueError
+            if self.path == "/quote":
+                quantity = data["quantity"]
+                if type(quantity) is not int or quantity not in range(1, 4):
+                    raise ValueError
         except (ValueError, KeyError, TypeError):
             self.json_reply(400, {"error": "Choose a valid quantity and loyalty level."})
             return
+        if self.path == "/primus/sign":
+            if not os.environ.get("CONFIDENTIAL_QUOTE_PRIMUS_SECRET"):
+                self.json_reply(503, {"error": "Configure the local Primus app secret to verify a sandbox tier."})
+                return
+            try:
+                signed = self.primus("sign")
+            except (OSError, subprocess.SubprocessError):
+                self.json_reply(502, {"error": "The local Primus signer could not sign the request."})
+                return
+            self.json_reply(200, {"signedRequest": signed})
+            return
+
+        verified = "attestation" in data
+        if verified:
+            try:
+                tier = int(self.primus("verify", json.dumps(data["attestation"])))
+            except (OSError, subprocess.SubprocessError, ValueError):
+                self.json_reply(422, {"error": "Primus could not verify this sandbox attestation."})
+                return
+        else:
+            tier = data.get("tier")
+        if type(tier) is not int or tier not in range(4):
+            self.json_reply(400, {"error": "Choose a valid loyalty level."})
+            return
+
         try:
             result = subprocess.run(
                 [BINARY, str(quantity), str(tier)], capture_output=True,
@@ -55,7 +96,10 @@ class Handler(BaseHTTPRequestHandler):
         except (OSError, subprocess.SubprocessError, ValueError):
             self.json_reply(500, {"error": "The local FHE engine could not compute this quote."})
             return
-        self.json_reply(200, {"price": price})
+        response = {"price": price}
+        if verified:
+            response["verifiedTier"] = tier
+        self.json_reply(200, response)
 
 
 if __name__ == "__main__":

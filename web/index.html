@@ -22,6 +22,7 @@
 <label>Order quantity<select id="quantity"><option>1</option><option selected>2</option><option>3</option></select></label>
 <label>Loyalty level<select id="tier"><option>0</option><option selected>1</option><option>2</option><option>3</option></select></label>
 <button id="submit">Compute encrypted quote</button>
+<button id="verify-loyalty" type="button" disabled>Verify sandbox tier and quote</button>
 </form></section>
 <section aria-live="polite"><div class="tag">Decrypted result</div><div class="price" id="price">—</div>
 <p id="status">Run a quote to see the result.</p>
@@ -68,4 +69,5 @@ quote.addEventListener('submit', async (event) => {
   }
 });
 </script>
+<script type="module" src="/loyalty.bundle.js"></script>
 </body></html>

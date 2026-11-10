@@ -27,3 +27,17 @@ Each item costs $5. A loyalty level of 2 or higher takes $2 off the order. At qu
 The browser and local helper exchange plaintext over loopback. The client and evaluator roles share one Rust process. This demo uses upstream experimental parameters, limits quantities to 1–3 and loyalty levels to 0–3, and is intended for synthetic inputs. The decrypted price can reveal discount eligibility to someone who knows the quantity and public policy.
 
 See [Dev Hub project details](DEV-HUB.md) for the listing text and reviewer walkthrough.
+
+## Verify the sandbox tier with Primus zkTLS
+
+The private Dev Hub template **Sandbox Loyalty Level** extracts `$.loyaltyLevel` from the [public synthetic fixture](https://vlsss12.github.io/confidential-quote/fixtures/). The verification demonstrates the value served by that fixture.
+
+Install Node.js and the official Primus extension in Chrome. In the project directory, run `npm ci` and `npm run build`. Build the Rust helper as above. Set `CONFIDENTIAL_QUOTE_PRIMUS_SECRET` in the local server process to the app secret for **Confidential Quote**. For example, in zsh:
+
+```zsh
+read -rs 'CONFIDENTIAL_QUOTE_PRIMUS_SECRET?Primus app secret: '
+export CONFIDENTIAL_QUOTE_PRIMUS_SECRET
+python3 serve.py
+```
+
+Open the local app in Chrome and choose **Verify sandbox tier and quote**. The local server signs a request for the fixed template, the browser SDK starts the attestation, and the server checks the signature, source URL, freshness, and tier before invoking Rust. A verified tier of 2 produces an $8 quote for two items. The public sandbox value is reusable within the freshness window and represents synthetic data, independent of the viewer’s identity.
