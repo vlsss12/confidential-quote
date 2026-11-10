@@ -7,9 +7,16 @@
     "api/demo.js": {
       "includeFiles": "runtime/confidential-quote",
       "maxDuration": 30
+    },
+    "api/orders.js": {
+      "includeFiles": "runtime/confidential-quote",
+      "maxDuration": 30
     }
   },
   "rewrites": [
+    {"source": "/shop", "destination": "/shop.html"},
+    {"source": "/store/quote", "destination": "/api/demo?operation=store"},
+    {"source": "/orders", "destination": "/api/orders"},
     {"source": "/quote", "destination": "/api/demo"},
     {"source": "/primus/sign", "destination": "/api/demo?operation=sign"}
   ]

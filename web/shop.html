@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en" data-mode="preview">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Confidential Quote Shop</title>
+<style>
+  body { font: 1rem system-ui, sans-serif; background: #17110e; color: #fff8f3; margin: 0; }
+  main { max-width: 42rem; margin: 8vh auto; padding: 1.25rem; }
+  h1 { font-size: clamp(2rem, 6vw, 3.5rem); margin: .25rem 0; }
+  p { color: #dac6b9; line-height: 1.6; }
+  strong { color: #ffad7e; }
+  form { background: #211813; border: 1px solid #67412d; padding: 1.5rem; border-radius: 1rem; }
+  label { display: grid; gap: .4rem; margin: 1rem 0; }
+  select, button { font: inherit; padding: .65rem; border-radius: .5rem; }
+  select { background: #35251c; color: inherit; border: 1px solid #9b6243; }
+  button { background: #ff854e; color: #241208; border: 0; font-weight: 700; cursor: pointer; margin: .3rem .3rem .3rem 0; }
+  button:disabled { opacity: .55; cursor: default; }
+  #status { overflow-wrap: anywhere; min-height: 3rem; }
+</style>
+<main>
+  <strong>PRIMUS FHE · STORE PREVIEW</strong>
+  <h1>Confidential Quote Shop</h1>
+  <p id="intro">Compare sample loyalty pricing. Demo orders are saved only after persistent storage is connected. No payment is collected.</p>
+  <form>
+    <h2>Sample item</h2>
+    <p>US$5 per item. Rewards accounts receive US$2 off the cart.</p>
+    <label>Test account<select name="profile"><option value="standard">Standard</option><option value="rewards">Rewards</option></select></label>
+    <label>Quantity<select name="quantity"><option>1</option><option selected>2</option><option>3</option></select></label>
+    <button type="submit">Calculate total</button>
+    <button type="button" id="place" hidden disabled>Save demo order</button>
+    <p id="status" role="status" aria-live="polite"></p>
+  </form>
+</main>
+<script type="module">
+  const form = document.querySelector('form');
+  const place = document.querySelector('#place');
+  const status = document.querySelector('#status');
+  const local = document.documentElement.dataset.mode === 'local';
+  let ordersEnabled = local;
+  if (local) {
+    place.hidden = false;
+    document.querySelector('#intro').textContent = 'Compare sample loyalty pricing, then save a demo order. No payment is collected.';
+  } else {
+    place.hidden = false;
+    fetch('/orders').then(response => response.json()).then(({enabled}) => {
+      ordersEnabled = enabled === true;
+      status.textContent = ordersEnabled ? 'Persistent demo-order storage is ready. No payment is collected.' : 'Demo-order saving is waiting for persistent storage setup. You can still calculate sample prices.';
+    }).catch(() => {
+      status.textContent = 'Demo-order saving is temporarily unavailable. You can still calculate sample prices.';
+    });
+  }
+  let cart;
+  form.addEventListener('change', () => {
+    cart = undefined;
+    place.disabled = true;
+    status.textContent = '';
+  });
+  async function send(path, body) {
+    const response = await fetch(path, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body)});
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error);
+    return data;
+  }
+  const money = data => new Intl.NumberFormat('en-US', {style: 'currency', currency: data.currency}).format(data.totalCents / 100);
+  async function run(action) {
+    const controls = [...form.elements];
+    controls.forEach(control => { control.disabled = true; });
+    try { await action(); }
+    catch (error) { status.textContent = error.message; }
+    finally {
+      controls.forEach(control => { control.disabled = false; });
+      place.disabled = !ordersEnabled || !cart;
+    }
+  }
+  form.addEventListener('submit', event => {
+    event.preventDefault();
+    const inputs = {profile: form.elements.profile.value, quantity: Number(form.elements.quantity.value)};
+    cart = undefined;
+    status.textContent = 'Calculating with Primus FHE…';
+    run(async () => {
+      const {profile, quantity} = inputs;
+      const data = await send('/quote', local ? inputs : {quantity, tier: profile === 'rewards' ? 2 : 1});
+      if (ordersEnabled) cart = {...inputs, sku: 'loyalty-item', requestId: crypto.randomUUID()};
+      status.textContent = `Sample total: ${money(local ? data : {currency: 'USD', totalCents: data.price * 100})}`;
+    });
+  });
+  place.addEventListener('click', () => {
+    status.textContent = 'Saving your test order…';
+    run(async () => {
+      const data = await send('/orders', cart);
+      cart = undefined;
+      status.textContent = `Demo order ${data.id} saved. Total: ${money(data)}. No payment was collected.`;
+    });
+  });
+</script>
+</html>

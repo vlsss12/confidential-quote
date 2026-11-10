@@ -52,3 +52,11 @@ For the optional live zkTLS flow, set these two variables under **Settings → E
 - `CONFIDENTIAL_QUOTE_ACCESS_CODE` is a separate random reviewer code of at least 24 characters. Share this code with reviewers through a private channel. Never use the Primus Secret Key as the reviewer code.
 
 On the deployed site, use Chrome with the Primus extension, enter the reviewer code, then select **Verify sandbox tier and quote**.
+
+## Store checkout pilot
+
+Call `POST /store/quote` from the store backend after authenticating the customer and looking up their cart. The request accepts a JSON object with exactly `sku` and `quantity`. The pilot supports `loyalty-item` and quantities 1 to 3. The FHE engine owns the pricing rule: USD 5 per item and USD 2 off the order at loyalty tier 2 or higher.
+
+The store backend sends `Authorization: Bearer <credential>`. Provision one randomly generated 32-byte credential per pilot account, encoded as lowercase hex. Keep the raw credential in the store backend. Configure `CONFIDENTIAL_QUOTE_STORE_MEMBERS` on the quote server as a JSON object mapping the lowercase SHA-256 hash of each credential string to its tier (0–3). Replace the credential by replacing its hash in the configuration. Leave the variable unset to disable this route.
+
+An accepted response includes `sku`, `quantity`, `currency`, and `totalCents`. For two items, the total is 1000 cents at tier 1 and 800 cents at tier 2. Recompute the quote from the authoritative cart before charging. For a live store, replace the pilot member mapping with the store's account integration and connect checkout through the store backend. This pilot uses the existing FHE engine, which encrypts and decrypts inside one server-side process.

@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { promisify } from 'node:util';
 import { PrimusZKTLS } from '@primuslabs/zktls-js-sdk';
+import { resolveStoreOrder } from '../store-order.js';
 import { appId, templateId, fixtureUrl } from '../loyalty-config.js';
 
 const run = promisify(execFile);
@@ -31,7 +32,8 @@ export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
   const reply = (status, data) => res.status(status).json(data);
   if (req.method !== 'POST') return reply(405, {error: 'Use POST.'});
-  if (req.headers.origin !== `https://${req.headers.host}` ||
+  const store = req.query.operation === 'store';
+  if ((!store && req.headers.origin !== `https://${req.headers.host}`) ||
       !/^application\/json(?:;|$)/i.test(req.headers['content-type'] || '')) {
     return reply(403, {error: 'Open this demo directly to continue.'});
   }
@@ -42,6 +44,22 @@ export default async function handler(req, res) {
         JSON.stringify(data).length > 32768) throw new Error();
   } catch {
     return reply(400, {error: 'Invalid request.'});
+  }
+
+  if (store) {
+    const order = resolveStoreOrder(data, req.headers.authorization, process.env.CONFIDENTIAL_QUOTE_STORE_MEMBERS);
+    if (order.error) return reply(order.status, {error: order.error});
+    try {
+      const total = await computeQuote(order.quantity, order.tier);
+      return reply(200, {
+        sku: order.sku,
+        quantity: order.quantity,
+        currency: 'USD',
+        totalCents: total * 100,
+      });
+    } catch {
+      return reply(503, {error: 'The FHE engine is temporarily unavailable.'});
+    }
   }
 
   const signing = req.query.operation === 'sign';
@@ -86,12 +104,18 @@ export default async function handler(req, res) {
   }
   if (![0, 1, 2, 3].includes(tier)) return reply(400, {error: 'Select a loyalty level from 0 to 3.'});
   try {
-    const {stdout} = await run(await prepareEngine(), [String(quantity), String(tier)], {timeout: 20000});
-    const price = Number(stdout.trim());
-    if (![3, 5, 8, 10, 13, 15].includes(price)) throw new Error('Invalid quote');
+    const price = await computeQuote(quantity, tier);
     return reply(200, verified ? {price, verifiedTier: tier} : {price});
   } catch (error) {
     console.error('FHE quote failed', {code: error.code, signal: error.signal, killed: error.killed});
     return reply(503, {error: 'The FHE engine is temporarily unavailable.'});
   }
+}
+
+async function computeQuote(quantity, tier) {
+  const {stdout} = await run(await prepareEngine(), [String(quantity), String(tier)], {timeout: 20000});
+  const price = Number(stdout.trim());
+  const subtotal = 5 * quantity;
+  if (price !== subtotal && price !== subtotal - 2) throw new Error('Invalid quote');
+  return price;
 }
