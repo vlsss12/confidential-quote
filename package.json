@@ -2,7 +2,18 @@
   "name": "confidential-quote-zktls",
   "private": true,
   "type": "module",
-  "scripts": {"build": "esbuild web/loyalty.js --bundle --format=esm --outfile=web/loyalty.bundle.js"},
-  "dependencies": {"@primuslabs/zktls-js-sdk": "0.3.15"},
-  "devDependencies": {"esbuild": "0.25.12"}
+  "scripts": {
+    "build": "esbuild web/loyalty.js --bundle --format=esm --outfile=web/loyalty.bundle.js"
+  },
+  "dependencies": {
+    "@primuslabs/zktls-js-sdk": "0.3.15"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.12"
+  },
+  "overrides": {
+    "rpc-websockets": {
+      "uuid": "11.1.0"
+    }
+  }
 }

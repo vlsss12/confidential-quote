@@ -1,0 +1,7 @@
+target
+__pycache__
+.env*
+web/loyalty.bundle.js
+node_modules
+.git
+runtime

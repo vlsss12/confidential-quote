@@ -41,3 +41,14 @@ python3 serve.py
 ```
 
 Open the local app in Chrome and choose **Verify sandbox tier and quote**. The local server signs a request for the fixed template, the browser SDK starts the attestation, and the server checks the signature, source URL, freshness, and tier before invoking Rust. A verified tier of 2 produces an $8 quote for two items. The public sandbox value is reusable within the freshness window and represents synthetic data, independent of the viewer’s identity.
+
+## Deploy on Vercel
+
+Deploy this directory as a separate Vercel project. Vercel builds the pinned Primus Rust engine for Linux and bundles it with the quote function. Visitors can compute sample quotes with synthetic inputs. The hosted helper receives those inputs and decrypts the resulting price before returning it to the browser.
+
+For the optional live zkTLS flow, set these two variables under **Settings → Environment Variables** for the deployment, then redeploy:
+
+- `CONFIDENTIAL_QUOTE_PRIMUS_SECRET` holds the Secret Key for the configured Primus application.
+- `CONFIDENTIAL_QUOTE_ACCESS_CODE` is a separate random reviewer code of at least 24 characters. Share this code with reviewers through a private channel. Never use the Primus Secret Key as the reviewer code.
+
+On the deployed site, use Chrome with the Primus extension, enter the reviewer code, then select **Verify sandbox tier and quote**.

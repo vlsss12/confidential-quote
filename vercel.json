@@ -1,0 +1,16 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "buildCommand": "bash scripts/vercel-build.sh",
+  "outputDirectory": "web",
+  "functions": {
+    "api/demo.js": {
+      "includeFiles": "runtime/confidential-quote",
+      "maxDuration": 30
+    }
+  },
+  "rewrites": [
+    {"source": "/quote", "destination": "/api/demo"},
+    {"source": "/primus/sign", "destination": "/api/demo?operation=sign"}
+  ]
+}

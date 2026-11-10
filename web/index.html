@@ -5,33 +5,63 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Confidential Quote · Primus FHE Demo</title>
 <style>
-:root{color-scheme:dark;--paper:#101219;--card:#191d28;--edge:#303647;--muted:#a8afc3;--mint:#9af1ce}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top right,#273d3c,transparent 45%),var(--paper);color:#f3f5fb;font:16px/1.55 system-ui,sans-serif}main{max-width:1050px;margin:auto;padding:42px 24px}.tag{color:var(--mint);font-size:.78rem;text-transform:uppercase;letter-spacing:.13em;font-weight:750}h1{font-size:clamp(2.5rem,7vw,5rem);line-height:1.05;letter-spacing:-.06em;margin:18px 0}p{color:var(--muted);margin:.45rem 0}h2{font-size:1.2rem;margin:0 0 12px}.lede{max-width:650px;font-size:1.15rem}.grid,.flow{display:grid;gap:16px;margin-top:25px}.grid{grid-template-columns:1fr 1fr}.flow{grid-template-columns:repeat(3,1fr)}section,article{background:var(--card);border:1px solid var(--edge);border-radius:18px;padding:22px}label{display:block;margin:12px 0;color:#d8deec}select,button{font:inherit;border-radius:9px;padding:9px 12px}select{display:block;width:100%;margin-top:4px;border:1px solid var(--edge);background:var(--paper);color:inherit}button{cursor:pointer;border:0;background:var(--mint);color:#11221b;font-weight:750}button:disabled{opacity:.6;cursor:wait}.presets{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}.presets button{background:#303747;color:#f3f5fb;font-size:.78rem}.price{font-size:3.2rem;line-height:1.25;font-weight:800;color:var(--mint)}footer{margin-top:22px;color:var(--muted);font-size:.9rem}@media(max-width:640px){.grid,.flow{grid-template-columns:1fr}}
+:root{color-scheme:dark;--paper:#0e1016;--card:#171a23;--edge:#2b303c;--muted:#adb4c5;--mint:#aaf5d0;--white:#f6f8fd}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(ellipse at 76% 3%,#1b3b36 0%,transparent 35%),var(--paper);color:var(--white);font:16px/1.55 system-ui,sans-serif}
+main{max-width:1130px;margin:auto;padding:0 24px 44px}
+a{color:var(--mint);text-underline-offset:4px}
+nav{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:23px 0;border-bottom:1px solid var(--edge)}
+nav a{font-size:.9rem}.brand{display:flex;align-items:center;gap:11px;font-weight:750}.mark{display:grid;place-items:center;width:34px;height:34px;border-radius:9px;background:var(--mint);color:#142820}
+.hero{padding:68px 0 32px;display:grid;grid-template-columns:1.2fr .8fr;gap:35px;align-items:center}
+.tag{color:var(--mint);font-size:.76rem;text-transform:uppercase;letter-spacing:.14em;font-weight:760}
+h1{font-size:clamp(2.7rem,8vw,5.2rem);line-height:.99;letter-spacing:-.075em;margin:16px 0}
+h1 span{color:var(--mint)}p{color:var(--muted);margin:.5rem 0}h2{font-size:1.27rem;margin:0 0 12px}h3{margin:7px 0;font-size:1.02rem}
+.lede{max-width:560px;font-size:1.11rem}
+.signal{position:relative;overflow:hidden;min-height:220px;border:1px solid #39534e;border-radius:24px;padding:28px;background:linear-gradient(145deg,#243a36,#141a23)}
+.signal:after{content:"";position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(#aaf5d012 1px,transparent 1px),linear-gradient(90deg,#aaf5d012 1px,transparent 1px);background-size:25px 25px;mask-image:linear-gradient(110deg,transparent,#000)}
+.signal strong{display:block;font-size:clamp(2.15rem,5vw,3.8rem);letter-spacing:-.07em;line-height:1.15;margin:18px 0 4px}.signal p{font-size:.9rem}
+.grid,.flow{display:grid;gap:16px;margin-top:24px}.grid{grid-template-columns:1.1fr .9fr}.flow{grid-template-columns:repeat(3,1fr)}
+section,article{background:var(--card);border:1px solid var(--edge);border-radius:20px;padding:24px}.result{background:linear-gradient(145deg,#1d2c2a,var(--card) 70%)}
+label{display:block;margin:12px 0;color:#e2e7f2}select,button,input{font:inherit;border-radius:10px;padding:10px 13px}
+select,input{display:block;width:100%;margin-top:5px;border:1px solid #454c5c;background:#10131b;color:inherit}
+button{cursor:pointer;border:1px solid transparent;background:var(--mint);color:#12261e;font-weight:750}button:hover:not(:disabled){filter:brightness(1.1)}button:disabled{opacity:.62;cursor:wait}
+:focus-visible{outline:2px solid var(--mint);outline-offset:3px}
+.presets,.buttons{display:flex;gap:8px;flex-wrap:wrap}.presets button,.secondary{background:#272e3b;color:var(--white);border-color:#3a4355}.presets button{font-size:.78rem}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}.price{font-size:clamp(3rem,7vw,5.3rem);line-height:1.15;letter-spacing:-.07em;font-weight:800;color:var(--mint)}
+.rule{border-top:1px solid var(--edge);margin-top:24px;padding-top:17px}.rule h2{font-size:1rem;margin-bottom:2px}.flow p,.rule p{font-size:.93rem}
+footer{margin-top:27px;padding-top:18px;border-top:1px solid var(--edge);color:var(--muted);font-size:.85rem}
+[hidden]{display:none!important}
+@media(max-width:710px){.hero,.grid,.flow{grid-template-columns:1fr}.hero{padding-top:44px;gap:20px}.signal{min-height:auto}.buttons button{width:100%}}
 </style>
 </head>
 <body><main>
-<div class="tag">Primus FHE · Local technical demo</div>
-<h1>Confidential Quote</h1>
-<p class="lede">Calculate a loyalty discount while the evaluator works with encrypted inputs.</p>
+<nav><div class="brand"><span class="mark" aria-hidden="true">CQ</span> Confidential Quote</div><a href="https://github.com/vlsss12/confidential-quote">View source ↗</a></nav>
+<header class="hero">
+<div><div class="tag">Primus zkTLS + FHE · Interactive demo</div><h1>Confidential<br><span>Quote.</span></h1><p class="lede">See how a loyalty discount can be calculated on encrypted inputs. Run a sample quote or verify the sandbox loyalty tier with Primus.</p></div>
+<aside class="signal" aria-label="Example pricing"><div class="tag">Example policy</div><strong>$10 → $8</strong><p>Two items. A $2 discount at loyalty tier 2 or higher.</p></aside>
+</header>
 <div class="grid">
-<section><h2>Try a quote</h2>
+<section aria-labelledby="quote-heading"><h2 id="quote-heading">Build a quote</h2>
 <div class="presets" aria-label="Example inputs">
 <button type="button" data-tier="1">Below threshold</button><button type="button" data-tier="2">At threshold</button><button type="button" data-tier="3">Above threshold</button>
 </div>
 <form id="quote">
+<div class="fields">
 <label>Order quantity<select id="quantity"><option>1</option><option selected>2</option><option>3</option></select></label>
 <label>Loyalty level<select id="tier"><option>0</option><option selected>1</option><option>2</option><option>3</option></select></label>
-<button id="submit">Compute encrypted quote</button>
-<button id="verify-loyalty" type="button" disabled>Verify sandbox tier and quote</button>
+</div>
+<label id="access-field" hidden>Reviewer access code<input id="reviewer-code" type="password" autocomplete="off" maxlength="128"></label>
+<div class="buttons"><button id="submit">Compute sample quote</button>
+<button class="secondary" id="verify-loyalty" type="button" disabled>Verify sandbox tier and quote</button></div>
 </form></section>
-<section aria-live="polite"><div class="tag">Decrypted result</div><div class="price" id="price">—</div>
+<section class="result" aria-live="polite"><div class="tag">Decrypted result</div><div class="price" id="price">—</div>
 <p id="status">Run a quote to see the result.</p>
-<h2>Public pricing rule</h2><p>Each item costs $5. Loyalty level 2 or above takes $2 off the order.</p>
+<div class="rule"><h2>Public pricing rule</h2><p>Each item costs $5. Loyalty level 2 or above takes $2 off the order.</p></div>
 </section></div>
-<div class="flow"><article><div class="tag">01 · Client</div><p>The local Rust helper encrypts your sample quantity and loyalty level.</p></article>
-<article><div class="tag">02 · Evaluator</div><p>Primus TFHE applies the public pricing rule to ciphertext using an evaluation key.</p></article>
-<article><div class="tag">03 · Client</div><p>The helper decrypts the final price and displays it here.</p></article></div>
-<footer>Use sample values only. The browser and helper run on this device. Client and evaluator roles share a native process and use experimental parameters.</footer>
+<div class="flow"><article><div class="tag">01 · Input</div><h3>Choose a loyalty tier</h3><p>Try a sample tier or use zkTLS to verify the value in the public sandbox fixture.</p></article>
+<article><div class="tag">02 · Compute</div><h3>Apply the rule with FHE</h3><p>The Rust helper encrypts sample inputs, and Primus TFHE evaluates the pricing rule on ciphertext.</p></article>
+<article><div class="tag">03 · Output</div><h3>Read the quote</h3><p>The helper decrypts the result and returns the price to this page.</p></article></div>
+<footer>Synthetic data only. The helper receives sample values, and the client and evaluator roles share a process with experimental FHE parameters.</footer>
 </main>
 <script>
 const quote = document.querySelector('#quote');
@@ -50,6 +80,8 @@ quote.addEventListener('submit', async (event) => {
   event.preventDefault();
   const payload = { quantity: Number(quantity.value), tier: Number(tier.value) };
   const controls = [submit, quantity, tier, ...presets];
+  const verify = document.querySelector('#verify-loyalty');
+  if (!verify.disabled) controls.push(verify);
   controls.forEach(control => control.disabled = true);
   price.textContent = '—';
   status.textContent = 'Computing with Primus FHE…';
@@ -61,7 +93,7 @@ quote.addEventListener('submit', async (event) => {
     const result = await response.json();
     if (!response.ok) throw new Error(result.error);
     price.textContent = '$' + result.price.toFixed(2);
-    status.textContent = 'Quote decrypted on this device.';
+    status.textContent = 'Sample quote computed with Primus FHE.';
   } catch (error) {
     status.textContent = error.message;
   } finally {
