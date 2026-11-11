@@ -4,7 +4,7 @@
 
 **Category** — Confidential computing / applied cryptography
 
-**Short description** — An interactive local demo that uses Primus FHE to calculate loyalty discounts over encrypted inputs.
+**Short description** — A browser based Primus demo combining a zkTLS check of a public sandbox loyalty fixture with an FHE evaluated sample quote.
 
 **Project description** — Confidential Quote makes a small merchant pricing rule inspectable end to end. Visitors can calculate a synthetic quote, or use the official Primus extension to attest to a loyalty value from the project’s public sandbox fixture. The server checks the attestation signature, requested source and method, freshness window, and value range before it uses the tier in a quote. The Rust helper evaluates the pricing rule with Primus TFHE. After verification, the page shows the exact claim, fixture host, verification time, and template ID. This proof confirms only what the public fixture served; it does not establish a visitor’s identity, account ownership, or real customer status. Hosted quote inputs are synthetic and processed by the server.
 
