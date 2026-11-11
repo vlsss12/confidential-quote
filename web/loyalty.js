@@ -39,14 +39,7 @@ button.addEventListener('click', async () => {
     status.textContent = 'Checking the attestation and computing the quote…';
     const result = await post('/quote', { quantity: Number(quantity.value), attestation }, accessCode);
     tier.value = String(result.verifiedTier);
-    price.textContent = '
-  } catch (error) {
-    status.textContent = error?.message || 'Primus verification did not complete.';
-  } finally {
-    controls.forEach(control => { control.disabled = false; });
-  }
-});
- + result.price.toFixed(2);
+    price.textContent = '$' + result.price.toFixed(2);
     document.querySelector('#proof-claim').textContent = result.verifiedClaim;
     const source = document.querySelector('#proof-source');
     source.href = result.proofSource;
