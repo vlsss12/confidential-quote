@@ -26,6 +26,7 @@ label{display:block;margin:12px 0;color:#f2e2d8}select,button,input{font:inherit
 select,input{display:block;width:100%;margin-top:5px;border:1px solid #74513d;background:#1c1410;color:inherit}
 button{cursor:pointer;border:1px solid transparent;background:var(--accent);color:#241208;font-weight:750}button:hover:not(:disabled){filter:brightness(1.1)}button:disabled{opacity:.62;cursor:wait}
 :focus-visible{outline:2px solid var(--highlight);outline-offset:3px}
+.scope-note{padding:11px 13px;border-left:3px solid var(--accent);background:#ff641f12;border-radius:0 10px 10px 0;font-size:.86rem}
 .presets,.buttons{display:flex;gap:8px;flex-wrap:wrap}.presets button,.secondary{background:#39271d;color:var(--white);border-color:#64422e}.presets button{font-size:.78rem}
 .fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}.price{font-size:clamp(2.5rem,5vw,4rem);line-height:1.15;letter-spacing:-.045em;font-weight:750;color:var(--highlight)}
 .rule{border-top:1px solid var(--edge);margin-top:24px;padding-top:17px}.rule h2{font-size:1rem;margin-bottom:2px}.flow p,.rule p{font-size:.93rem}
@@ -56,12 +57,20 @@ footer{margin-top:27px;padding-top:18px;border-top:1px solid var(--edge);color:v
 </form></section>
 <section class="result" aria-live="polite"><div class="tag">Decrypted result</div><div class="price" id="price">—</div>
 <p id="status">Run a quote to see the result.</p>
+<div class="rule" id="proof-details" hidden>
+<h2>Primus zkTLS check</h2>
+<p><strong>Verified claim:</strong> <span id="proof-claim"></span></p>
+<p><strong>Source:</strong> <a id="proof-source" target="_blank" rel="noreferrer">Public sandbox fixture ↗</a></p>
+<p><strong>Checked at:</strong> <time id="proof-time"></time></p>
+<p><strong>Request:</strong> <span id="proof-template"></span></p>
+<p class="scope-note">This confirms the fixture’s published value at the stated time. It does not establish your identity, ownership of an account, or a real customer’s loyalty status.</p>
+</div>
 <div class="rule"><h2>Public pricing rule</h2><p>Each item costs $5. Loyalty level 2 or above takes $2 off the order.</p></div>
 </section></div>
 <div class="flow"><article><div class="tag">01 · Input</div><h3>Choose a loyalty tier</h3><p>Try a sample tier or use zkTLS to verify the value in the public sandbox fixture.</p></article>
 <article><div class="tag">02 · Compute</div><h3>Apply the rule with FHE</h3><p>The Rust helper encrypts sample inputs, and Primus TFHE evaluates the pricing rule on ciphertext.</p></article>
 <article><div class="tag">03 · Output</div><h3>Read the quote</h3><p>The helper decrypts the result and returns the price to this page.</p></article></div>
-<footer>Synthetic data only. The helper receives sample values, and the client and evaluator roles share a process with experimental FHE parameters.</footer>
+<footer>Synthetic data only. Hosted requests send sample values to the server, where one Rust process encrypts, evaluates, and decrypts the quote. The sandbox proof checks a public fixture; it is not personal credential verification. FHE parameters are experimental.</footer>
 </main>
 <script>
 const quote = document.querySelector('#quote');
