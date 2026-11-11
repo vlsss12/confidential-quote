@@ -51,7 +51,7 @@ For the optional live zkTLS flow, set these two variables under **Settings → E
 - `CONFIDENTIAL_QUOTE_PRIMUS_SECRET` holds the Secret Key for the configured Primus application.
 - `CONFIDENTIAL_QUOTE_ACCESS_CODE` is a separate random reviewer code of at least 24 characters. Share this code with reviewers through a private channel. Never use the Primus Secret Key as the reviewer code.
 
-On the deployed site, use Chrome with the Primus extension, enter the reviewer code, then select **Verify sandbox tier and quote**.
+On the [deployed site](https://confidential-quote.vercel.app/), use Chrome with the Primus extension, enter the reviewer code, then select **Verify sandbox tier and quote**. After a successful check, the app displays the attested claim, public fixture host, verification timestamp, and template ID. The server accepts only a valid Primus attestation for the configured GET source, checks that it is no more than five minutes old (with 30 seconds of clock skew), and accepts only tiers 0–3. A successful result is evidence about the public fixture at that time; it is not proof of the visitor’s identity, ownership, or real-world loyalty status.
 
 ## Store checkout pilot
 
