@@ -105,7 +105,14 @@ export default async function handler(req, res) {
   if (![0, 1, 2, 3].includes(tier)) return reply(400, {error: 'Select a loyalty level from 0 to 3.'});
   try {
     const price = await computeQuote(quantity, tier);
-    return reply(200, verified ? {price, verifiedTier: tier} : {price});
+    return reply(200, verified ? {
+      price,
+      verifiedTier: tier,
+      verifiedClaim: `loyaltyLevel = ${tier}`,
+      proofSource: fixtureUrl,
+      verifiedAt: new Date(data.attestation.timestamp).toISOString(),
+      templateId,
+    } : {price});
   } catch (error) {
     console.error('FHE quote failed', {code: error.code, signal: error.signal, killed: error.killed});
     return reply(503, {error: 'The FHE engine is temporarily unavailable.'});
